@@ -4,7 +4,7 @@ const checkAuth = require('../../util/check-auth');
 
 module.exports = {
   Query: {
-    async getMovies(_, {offset = 2, limit = 5, search}, context) {
+    async getMovies(_, {offset = 2, limit = 5, search = ''}, context) {
       try {
         const movies = await prisma.movie.findMany({
           where: {

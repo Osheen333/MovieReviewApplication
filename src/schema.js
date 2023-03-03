@@ -9,7 +9,6 @@ const typeDefs = gql`
     movieName: String!
     directorName: String!
     releaseDate: String
-    reviews: [Review]
   }
 
   type Review {

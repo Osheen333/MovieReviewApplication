@@ -4,8 +4,12 @@ const {prisma} = require('../../database');
 
 module.exports = {
   Query: {
-    async getReviewsByMovieId(_, {offset = 0, limit = 5, search, movieId}) {
+    async getReviewsByMovieId(
+      _,
+      {offset = 0, limit = 5, search = '', movieId}
+    ) {
       try {
+        console.log(offset, limit, search, movieId);
         const reviews = await prisma.review.findMany({
           where: {
             movieId: +movieId,
@@ -20,6 +24,7 @@ module.exports = {
           skip: +offset,
           take: +limit,
         });
+
         return reviews;
       } catch (error) {
         throw new Error(error);
