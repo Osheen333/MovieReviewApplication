@@ -64,7 +64,7 @@ module.exports = {
         password,
         confirmPassword
       );
-
+      console.log(name, email, password, confirmPassword);
       if (!valid) {
         throw new UserInputError('Error', {errors});
       }
