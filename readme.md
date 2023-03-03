@@ -3,6 +3,7 @@
 
 - npm install  // for installing all the dependencies
 - npx prisma migrate dev // for locally setting up database
+-  npm start // for running the application
 
 ## Tools used 
 
