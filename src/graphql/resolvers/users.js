@@ -26,11 +26,10 @@ function generateToken(user) {
 module.exports = {
   Mutation: {
     async login(parent, {email, password}) {
-      const {errors, valid} = validateLoginInput(email, password);
+      const errors = {};
 
-      if (!valid) {
-        throw new UserInputError('Errors', {errors});
-      }
+      validateLoginInput(email, password);
+
       const user = await prisma.user.findFirst({
         where: {email: String(email)},
       });
@@ -58,16 +57,7 @@ module.exports = {
       {registerInput: {name, email, password, confirmPassword}}
     ) {
       // TODO: validate user data
-      const {valid, errors} = validateRegisterInput(
-        name,
-        email,
-        password,
-        confirmPassword
-      );
-      console.log(name, email, password, confirmPassword);
-      if (!valid) {
-        throw new UserInputError('Error', {errors});
-      }
+      validateRegisterInput(name, email, password, confirmPassword);
 
       // TODO: Make sure user doesn't already  exists
       const user = await prisma.user.findFirst({
@@ -107,11 +97,8 @@ module.exports = {
       context
     ) {
       // TODO: validate user data
-      const {valid, errors} = validateChangePassword(password, confirmPassword);
+      validateChangePassword(password, confirmPassword);
 
-      if (!valid) {
-        throw new UserInputError('Error', {errors});
-      }
       const user = checkAuth(context);
 
       try {

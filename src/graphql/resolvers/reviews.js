@@ -6,10 +6,16 @@ module.exports = {
   Query: {
     async getReviewsByMovieId(
       _,
-      {offset = 0, limit = 5, search = '', movieId}
+      {
+        offset = 0,
+        limit = 5,
+        search = '',
+        orderBy = 'desc',
+        sortBy = 'id',
+        movieId,
+      }
     ) {
       try {
-        console.log(offset, limit, search, movieId);
         const reviews = await prisma.review.findMany({
           where: {
             movieId: +movieId,
@@ -23,6 +29,9 @@ module.exports = {
           },
           skip: +offset,
           take: +limit,
+          orderBy: {
+            [sortBy]: orderBy,
+          },
         });
 
         return reviews;

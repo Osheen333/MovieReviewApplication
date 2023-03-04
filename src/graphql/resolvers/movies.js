@@ -2,9 +2,15 @@ const {AuthenticationError, UserInputError} = require('apollo-server');
 const {prisma} = require('../../database');
 const checkAuth = require('../../util/check-auth');
 
+const {validateMovieInput} = require('../../util/validators');
+
 module.exports = {
   Query: {
-    async getMovies(_, {offset = 2, limit = 5, search = ''}, context) {
+    async getMovies(
+      _,
+      {offset = 0, limit = 5, search = '', orderBy = 'desc', sortBy = 'id'},
+      context
+    ) {
       try {
         const movies = await prisma.movie.findMany({
           where: {
@@ -29,7 +35,7 @@ module.exports = {
           skip: offset,
           take: limit,
           orderBy: {
-            id: 'desc',
+            [sortBy]: orderBy,
           },
         });
         return movies;
@@ -59,6 +65,8 @@ module.exports = {
       context
     ) {
       const user = await checkAuth(context);
+
+      validateMovieInput(description, movieName, directorName, releaseDate);
 
       const newMovie = {
         userId: user.id,

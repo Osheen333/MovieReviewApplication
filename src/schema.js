@@ -34,13 +34,21 @@ const typeDefs = gql`
   }
 
   type Query {
-    getMovies(offset: Int, limit: Int, search: String): [Movie!]
+    getMovies(
+      offset: Int
+      limit: Int
+      search: String
+      orderBy: String
+      sortBy: String
+    ): [Movie!]
     getMovie(movieId: ID!): Movie
     getReviewsByMovieId(
       offset: Int
       limit: Int
       search: String
       movieId: ID!
+      orderBy: String
+      sortBy: String
     ): [Review]
   }
 

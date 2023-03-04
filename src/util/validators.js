@@ -1,4 +1,6 @@
 require('dotenv').config();
+const {UserInputError} = require('apollo-server');
+const Joi = require('joi');
 
 module.exports.validateRegisterInput = (
   name,
@@ -6,66 +8,96 @@ module.exports.validateRegisterInput = (
   password,
   confirmPassword
 ) => {
-  const emailRegex =
-    '/^([a-zA-Z0-9_.-])+@(([a-zA-Z0-9-])+.)+([a-zA-Z0-9]{2,4})+$/';
+  const passwordPattern =
+    /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 
-  const errors = {};
+  const schema = Joi.object({
+    name: Joi.string().alphanum().min(3).max(30).required(),
+    password: Joi.string()
+      .regex(RegExp(passwordPattern)) // you have to put it in this way and it will work :)
+      .required()
+      .min(8)
+      .max(20),
+    confirmPassword: Joi.ref('password'),
+    email: Joi.string().email({
+      minDomainSegments: 2,
+      tlds: {allow: ['com', 'net']},
+    }),
+  });
+  const {value, error} = schema.validate(
+    {name, email, password, confirmPassword},
+    {abortEarly: false}
+  );
 
-  if (name.trim() === '') {
-    errors.name = 'name must not empty';
+  if (error) {
+    throw new UserInputError('Error', {error});
   }
-  if (email.trim() === '') {
-    errors.email = 'email mut not empty';
-  } else {
-    const regEx =
-      /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    if (!email.match(regEx)) {
-      errors.email = 'email must be vallid';
-    }
-  }
-  if (password.trim() === '') {
-    errors.password = 'password must not empty';
-  } else if (password !== confirmPassword) {
-    errors.confirmPassword = ' password must be equal';
-  }
-
-  return {
-    errors,
-    valid: Object.keys(errors).length < 1,
-  };
 };
 module.exports.validateLoginInput = (email, password) => {
-  const errors = {};
+  const passwordPattern =
+    /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 
-  if (email.trim() === '') {
-    errors.email = 'email mut not empty';
-  } else {
-    const regEx =
-      /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    if (!email.match(regEx)) {
-      errors.email = 'email must be vallid';
-    }
+  const schema = Joi.object({
+    password: Joi.string()
+      .regex(RegExp(passwordPattern)) // you have to put it in this way and it will work :)
+      .required()
+      .min(8)
+      .max(20),
+    email: Joi.string().email({
+      minDomainSegments: 2,
+      tlds: {allow: ['com', 'net']},
+    }),
+  });
+  const {value, error} = schema.validate(
+    {email, password},
+    {abortEarly: false}
+  );
+
+  if (error) {
+    throw new UserInputError('Error', {error});
   }
-  if (password.trim() === '') {
-    errors.password = 'Password must not empty';
-  }
-  return {
-    errors,
-    valid: Object.keys(errors).length < 1,
-  };
 };
 
 module.exports.validateChangePassword = (password, confirmPassword) => {
-  const errors = {};
+  const passwordPattern =
+    /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 
-  if (password.trim() === '') {
-    errors.password = 'password must not empty';
-  } else if (password !== confirmPassword) {
-    errors.confirmPassword = ' password must be equal';
+  const schema = Joi.object({
+    password: Joi.string()
+      .regex(RegExp(passwordPattern)) // you have to put it in this way and it will work :)
+      .required()
+      .min(8)
+      .max(20),
+    confirmPassword: Joi.ref('password'),
+  });
+  const {value, error} = schema.validate(
+    {confirmPassword, password},
+    {abortEarly: false}
+  );
+
+  if (error) {
+    throw new UserInputError('Error', {error});
   }
+};
 
-  return {
-    errors,
-    valid: Object.keys(errors).length < 1,
-  };
+module.exports.validateMovieInput = (
+  description,
+  movieName,
+  directorName,
+  releaseDate
+) => {
+  const schema = Joi.object({
+    movieName: Joi.string().min(3).max(30).required(),
+    description: Joi.string().min(3).max(300).required(),
+    directorName: Joi.string().min(3).max(30).required(),
+    releaseDate: Joi.string().min(3).max(15).required(),
+  });
+  const {value, error} = schema.validate(
+    {movieName, description, directorName, releaseDate},
+    {abortEarly: false}
+  );
+
+  if (error) {
+    throw new UserInputError('Error', {error});
+  }
 };
