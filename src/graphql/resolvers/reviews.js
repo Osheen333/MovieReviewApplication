@@ -88,10 +88,9 @@ module.exports = {
         const getReview = await prisma.review.findFirst({
           where: {id: Number(reviewId)},
         });
-        console.log(getReview);
 
         if (getReview.userId === user.id) {
-          const review = await prisma.review.delete({
+          await prisma.review.delete({
             where: {
               id: +reviewId,
             },
@@ -100,7 +99,7 @@ module.exports = {
         }
         throw new AuthenticationError('Error', {
           errors: {
-            comment: 'Auction not allowed',
+            comment: 'Action not allowed',
           },
         });
       } catch (error) {

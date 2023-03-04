@@ -1,5 +1,6 @@
 require('dotenv').config();
 const {UserInputError} = require('apollo-server');
+// eslint-disable-next-line import/no-extraneous-dependencies
 const Joi = require('joi');
 
 module.exports.validateRegisterInput = (
@@ -12,7 +13,7 @@ module.exports.validateRegisterInput = (
     /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
 
   const schema = Joi.object({
-    name: Joi.string().alphanum().min(3).max(30).required(),
+    name: Joi.string().min(3).max(30).required(),
     password: Joi.string()
       .regex(RegExp(passwordPattern)) // you have to put it in this way and it will work :)
       .required()

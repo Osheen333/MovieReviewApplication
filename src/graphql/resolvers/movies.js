@@ -1,7 +1,6 @@
 const {AuthenticationError, UserInputError} = require('apollo-server');
 const {prisma} = require('../../database');
 const checkAuth = require('../../util/check-auth');
-
 const {validateMovieInput} = require('../../util/validators');
 
 module.exports = {
@@ -96,8 +95,8 @@ module.exports = {
 
           return 'Movie deleted successfuly';
         }
-        throw new AuthenticationError('Auction not allowed', {
-          error: 'Auction not allowed',
+        throw new AuthenticationError('Action not allowed', {
+          error: 'Action not allowed',
         });
       } catch (error) {
         throw new Error(error);
@@ -136,8 +135,8 @@ module.exports = {
 
           return movie;
         }
-        throw new AuthenticationError('Auction not allowed', {
-          error: 'Auction not allowed',
+        throw new AuthenticationError('Action not allowed', {
+          error: 'Action not allowed',
         });
       } catch (error) {
         throw new Error(error);
